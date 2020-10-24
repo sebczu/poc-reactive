@@ -5,7 +5,4 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(scanBasePackages = "com.sebczu")
 public class TestConfiguration {
 
-
-
-
 }
