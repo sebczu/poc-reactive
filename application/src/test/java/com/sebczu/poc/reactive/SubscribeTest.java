@@ -2,6 +2,8 @@ package com.sebczu.poc.reactive;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Flux;
 import reactor.util.context.Context;
@@ -123,4 +125,35 @@ public class SubscribeTest {
         }, Context.of("key", "value")); //initial context will be available on each step
   }
 
+  @Test
+  public void subscribe8() {
+    Flux<String> publisher = Flux.push(emitter -> {
+      emitter.next("test");
+      emitter.next("test2");
+      emitter.error(new RuntimeException("error"));
+    });
+
+    publisher
+        .subscribe(new Subscriber<>() {
+          @Override
+          public void onSubscribe(Subscription subscription) {
+            subscription.request(10);
+          }
+
+          @Override
+          public void onNext(String string) {
+            log.info(string);
+          }
+
+          @Override
+          public void onError(Throwable error) {
+            log.error("error: ", error);
+          }
+
+          @Override
+          public void onComplete() {
+            log.info("complete");
+          }
+        });
+  }
 }
