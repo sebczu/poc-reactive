@@ -38,7 +38,7 @@ public class SubscribeTest {
     Flux<String> publisher = Flux.push(emitter -> {
       emitter.next("test");
       emitter.next("test2");
-      throw new RuntimeException("error");
+      emitter.error(new RuntimeException("error"));
     });
 
     publisher
@@ -48,6 +48,65 @@ public class SubscribeTest {
         }, error -> {
           log.info("thread: " + Thread.currentThread().getName());
           log.error("error: ", error);
+        });
+  }
+
+  @Test
+  public void subscribe4() {
+    Flux<String> publisher = Flux.push(emitter -> {
+      emitter.next("test");
+      emitter.next("test2");
+      emitter.error(new RuntimeException("error"));
+    });
+
+    publisher
+        .subscribe(string -> {
+          log.info("thread: " + Thread.currentThread().getName());
+          log.info(string);
+        }, error -> {
+          log.info("thread: " + Thread.currentThread().getName());
+          log.error("error: ", error);
+        });
+  }
+
+  //complete() or error() terminate sequence
+  @Test
+  public void subscribe5() {
+    Flux<String> publisher = Flux.push(emitter -> {
+      emitter.next("test");
+      emitter.next("test2");
+      emitter.complete();
+    });
+
+    publisher
+        .subscribe(string -> {
+          log.info("thread: " + Thread.currentThread().getName());
+          log.info(string);
+        }, error -> {
+          log.info("thread: " + Thread.currentThread().getName());
+          log.error("error: ", error);
+        }, () -> {
+          log.info("complete");
+        });
+  }
+
+  @Test
+  public void subscribe6() {
+    Flux<String> publisher = Flux.push(emitter -> {
+      emitter.next("test");
+      emitter.next("test2");
+      emitter.error(new RuntimeException("error"));
+    });
+
+    publisher
+        .subscribe(string -> {
+          log.info("thread: " + Thread.currentThread().getName());
+          log.info(string);
+        }, error -> {
+          log.info("thread: " + Thread.currentThread().getName());
+          log.error("error: ", error);
+        }, () -> {
+          log.info("complete");
         });
   }
 
