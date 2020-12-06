@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Flux;
+import reactor.util.context.Context;
 
 @Slf4j
 @SpringBootTest
@@ -28,7 +29,6 @@ public class SubscribeTest {
 
     publisher
         .subscribe(string -> {
-          log.info("thread: " + Thread.currentThread().getName());
           log.info(string);
         });
   }
@@ -43,10 +43,8 @@ public class SubscribeTest {
 
     publisher
         .subscribe(string -> {
-          log.info("thread: " + Thread.currentThread().getName());
           log.info(string);
         }, error -> {
-          log.info("thread: " + Thread.currentThread().getName());
           log.error("error: ", error);
         });
   }
@@ -61,10 +59,8 @@ public class SubscribeTest {
 
     publisher
         .subscribe(string -> {
-          log.info("thread: " + Thread.currentThread().getName());
           log.info(string);
         }, error -> {
-          log.info("thread: " + Thread.currentThread().getName());
           log.error("error: ", error);
         });
   }
@@ -80,10 +76,8 @@ public class SubscribeTest {
 
     publisher
         .subscribe(string -> {
-          log.info("thread: " + Thread.currentThread().getName());
           log.info(string);
         }, error -> {
-          log.info("thread: " + Thread.currentThread().getName());
           log.error("error: ", error);
         }, () -> {
           log.info("complete");
@@ -100,14 +94,33 @@ public class SubscribeTest {
 
     publisher
         .subscribe(string -> {
-          log.info("thread: " + Thread.currentThread().getName());
           log.info(string);
         }, error -> {
-          log.info("thread: " + Thread.currentThread().getName());
           log.error("error: ", error);
         }, () -> {
           log.info("complete");
         });
+  }
+
+  @Test
+  public void subscribe7() {
+    Flux<String> publisher = Flux.push(emitter -> {
+      emitter.next("test");
+      emitter.next("test2");
+      emitter.error(new RuntimeException("error"));
+    });
+
+    publisher
+        .doOnEach(signal -> {
+          log.info("context: {}", signal.getContext().<String>get("key"));
+        })
+        .subscribe(string -> {
+          log.info(string);
+        }, error -> {
+          log.error("error: ", error);
+        }, () -> {
+          log.info("complete");
+        }, Context.of("key", "value")); //initial context will be available on each step
   }
 
 }
