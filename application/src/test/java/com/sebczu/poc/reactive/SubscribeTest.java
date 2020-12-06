@@ -35,7 +35,11 @@ public class SubscribeTest {
 
   @Test
   public void subscribe3() {
-    Flux<String> publisher = Flux.just("test", "test2");
+    Flux<String> publisher = Flux.push(emitter -> {
+      emitter.next("test");
+      emitter.next("test2");
+      throw new RuntimeException("error");
+    });
 
     publisher
         .subscribe(string -> {
