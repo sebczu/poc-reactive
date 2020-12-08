@@ -114,7 +114,7 @@ public class SubscribeTest {
 
     publisher
         .doOnEach(signal -> {
-          log.info("context: {}", signal.getContext().<String>get("key"));
+          log.info("context: {}", signal.getContextView().<String>get("key"));
         })
         .subscribe(string -> {
           log.info(string);
