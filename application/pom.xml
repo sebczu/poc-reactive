@@ -28,11 +28,12 @@
 <!--      <artifactId>reactor-tools</artifactId>-->
 <!--      <scope>test</scope>-->
 <!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>io.projectreactor.tools</groupId>-->
-<!--      <artifactId>blockhound-junit-platform</artifactId>-->
-<!--      <version>1.0.4.RELEASE</version>-->
-<!--    </dependency>-->
+    <dependency>
+      <groupId>io.projectreactor.tools</groupId>
+      <artifactId>blockhound-junit-platform</artifactId>
+      <version>1.0.4.RELEASE</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
