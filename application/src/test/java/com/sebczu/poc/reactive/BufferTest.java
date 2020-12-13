@@ -12,7 +12,7 @@ public class BufferTest {
   /**
    * --a--b--c--
    * buffer
-   * --[a,b,c]--
+   * --------[a,b,c]--
    */
   @Test
   public void buffer() {
