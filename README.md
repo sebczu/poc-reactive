@@ -1,4 +1,4 @@
-### **POC-RSOCKET-JWT**
+### **POC-REACTIVE**
 **spring boot + projectreactor**
 
 #### 1. Build service
