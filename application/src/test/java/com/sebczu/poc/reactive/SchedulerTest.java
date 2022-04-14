@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 @Slf4j
@@ -58,6 +59,44 @@ public class SchedulerTest {
       })
       .subscribeOn(Schedulers.newSingle("custom-single"))
       .blockLast();
+  }
+
+  @Test
+  public void scheduler3() {
+    Flux<String> publisher = Flux.just("a", "b", "c");
+
+    publisher
+      .log()
+      .publishOn(Schedulers.newParallel("pub", 3))
+      .map(str -> {
+        log.info("(map1) begin in thread: {} string {}", Thread.currentThread().getName(), str);
+        sleep(50);
+        log.info("(map1) end in thread: {} string {}", Thread.currentThread().getName(), str);
+        return str;
+      })
+      .map(str -> {
+        log.info("(map2) begin in thread: {} string {}", Thread.currentThread().getName(), str);
+        sleep(75);
+        log.info("(map2) end in thread: {} string {}", Thread.currentThread().getName(), str);
+        return str;
+      })
+      .subscribeOn(Schedulers.newSingle("sub"))
+      .blockLast();
+  }
+
+  @Test
+  public void scheduler4() {
+    Flux.range(1, 20)
+      .log()
+      .parallel(3, 3).runOn(Schedulers.newParallel("par", 3))
+      .flatMap(counter -> {
+        log.info("counter [begin] {}", counter);
+        return Mono.just(counter)
+          .doOnNext(c -> log.info("counter [end] {}", c));
+      })
+      .subscribe(next -> log.info("subscribe counter {}", next));
+
+    sleep(1000);
   }
 
   @SneakyThrows

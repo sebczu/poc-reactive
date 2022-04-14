@@ -134,26 +134,27 @@ public class SubscribeTest {
     });
 
     publisher
-        .subscribe(new Subscriber<>() {
-          @Override
-          public void onSubscribe(Subscription subscription) {
-            subscription.request(10);
-          }
+      .log()
+      .subscribe(new Subscriber<>() {
+        @Override
+        public void onSubscribe(Subscription subscription) {
+          subscription.request(10);
+        }
 
-          @Override
-          public void onNext(String string) {
-            log.info(string);
-          }
+        @Override
+        public void onNext(String string) {
+          log.info(string);
+        }
 
-          @Override
-          public void onError(Throwable error) {
-            log.error("error: ", error);
-          }
+        @Override
+        public void onError(Throwable error) {
+          log.error("error: ", error);
+        }
 
-          @Override
-          public void onComplete() {
-            log.info("complete");
-          }
-        });
+        @Override
+        public void onComplete() {
+          log.info("complete");
+        }
+      });
   }
 }
