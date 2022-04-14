@@ -87,13 +87,13 @@ public class SchedulerTest {
   @Test
   public void scheduler4() {
     Flux.range(1, 20)
-      .log()
       .parallel(3, 3).runOn(Schedulers.newParallel("par", 3))
       .flatMap(counter -> {
         log.info("counter [begin] {}", counter);
         return Mono.just(counter)
           .doOnNext(c -> log.info("counter [end] {}", c));
       })
+      .log()
       .subscribe(next -> log.info("subscribe counter {}", next));
 
     sleep(1000);
